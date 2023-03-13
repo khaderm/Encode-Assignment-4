@@ -1,0 +1,65 @@
+<div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">Hello</h1>
+  <div class="col-lg-6 mx-auto">
+    <div *ngIf="blockNumber" class="my-4">
+      <p class="lead mb-4">We are connected to the Goerli blockchain at the block: {{blockNumber}} 
+      </p>
+      <button 
+        type="button" 
+        class="btn btn-success btn-lg px-4 gap-3"
+        (click)="createWallet()"
+      >
+        {{userWallet ? "Recreate" : "Create"}} Wallet
+      </button>
+      <div *ngIf="userWallet" class="card my-4">
+        <div class="card-body">
+          <h5 class="card-title">User Wallet</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{userWallet.address}}</h6>
+          <h6 class="card-subtitle mb-2 text-muted">{{userWallet.privateKey}}</h6>
+          <p class="card-text">Balance: {{userBalance}} ETH</p>
+          <p class="card-text">Token Balance: {{userTokenBalance}} MTK</p>
+          <div *ngIf="!userTokenBalance || userTokenBalance == 0" class="my-4">
+            <p>Request tokens</p>
+            <input #valueInput class="input" type="number" min="0" max="10">
+            <p>Claim:</p>
+            <button 
+            *ngIf="valueInput.value"
+            type="button"
+            class="btn btn-danger btn-lg px-4 gap-3 my-4"
+            (click)="requestTokens(valueInput.value)"
+            >
+              Request
+
+            </button>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div *ngIf="tokenContractAddress" class="card my-4">
+        <div class="card-body">
+          <h5 class="card-title">Token Info</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{tokenContractAddress}}</h6>
+          <p class="card-text">Total Supply: {{tokenSupply}} MTK</p>
+          
+      </div>
+    </div>
+
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <button 
+        type="button" 
+        class="btn btn-primary btn-lg px-4 gap-3"
+        (click)="syncBlock()"
+      >
+        Sync
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary btn-lg px-4"
+        (click)="clearBlock()"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+</div>
