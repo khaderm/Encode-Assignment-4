@@ -10,8 +10,8 @@ import * as myTokenJson from './assets/MyToken.json';
 import * as tokenizedBallotJson from './assets/TokenizedBallot.json';
 import { TransactionResponseDTO, ErrorMessageDTO } from './dtos';
 
-const MY_TOKEN_CONTRACT_ADDRESS = '0x9A750A01629649975DC1F4e608aB203016F55180';
-const TOKENIZED_BALLOT_CONTRACT_ADDRESS = '0xD7B7419e9FaC3D687a206e0656Ec7938049aA9e2';
+const MY_TOKEN_CONTRACT_ADDRESS = '0x85397ac612F0761C17c2C7e1f7DFDaA7a876517B';
+const TOKENIZED_BALLOT_CONTRACT_ADDRESS = '0x7D841FAF3c2bE1c80E9AF1753f2C25139dd56123';
 
 @Injectable()
 export class AppService {
@@ -188,13 +188,3 @@ export class AppService {
     }
   }
 }
-
-// {
-//   "address": "0xfcC5fB101131630Bd2154A7f0BcDC433159325c6",
-//   "amount": 5000
-// }
-
-// {
-//   "proposalId": 1,
-//   "amount": 5000
-// }
