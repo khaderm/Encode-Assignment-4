@@ -18,8 +18,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('contract-address')
-  getContractAddress(): { result: string } {
+  @Get('token-address')
+  getTokenAddress(): { result: string } {
     return { result: this.appService.getTokenAddress() };
   }
   @Get('ballot-contract')
