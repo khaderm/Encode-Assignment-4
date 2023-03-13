@@ -1,41 +1,4 @@
 import { Injectable } from '@nestjs/common';
-<<<<<<< Updated upstream
-import { ethers } from 'ethers';
-import { BigNumber } from 'ethers/lib/ethers';
-//import * as dotenv from 'dotenv'
-// import dotenv from 'dotenv'
-// dotenv.config()
-
-
-import * as myTokenJson from './assets/MyToken.json';
-import * as tokenizedBallotJson from './assets/TokenizedBallot.json';
-import { TransactionResponseDTO, ErrorMessageDTO } from './dtos';
-
-const MY_TOKEN_CONTRACT_ADDRESS = '0x85397ac612F0761C17c2C7e1f7DFDaA7a876517B';
-const TOKENIZED_BALLOT_CONTRACT_ADDRESS = '0x7D841FAF3c2bE1c80E9AF1753f2C25139dd56123';
-
-@Injectable()
-export class AppService {
-  myTokenContract = null;
-  tokenizedBallotContract = null;
-  signer = null;
-  provider: ethers.providers.BaseProvider;
-  contract: ethers.Contract;
-  configService: any;
-
-  constructor(){
-    this.provider = ethers.getDefaultProvider('goerli');
-    this.contract = new ethers.Contract(
-      MY_TOKEN_CONTRACT_ADDRESS,
-      myTokenJson.abi,
-      this.provider
-      );
-    this.tokenizedBallotContract = new ethers.Contract(
-      TOKENIZED_BALLOT_CONTRACT_ADDRESS,
-      tokenizedBallotJson.abi,
-      this.provider
-    );
-=======
 import { BigNumber, ethers } from 'ethers';
 import * as tokenJson from './assets/MyToken.json';
 import * as ballotJson from './assets/TokenizedBallot.json';
@@ -83,7 +46,6 @@ export class AppService {
   counter = 0;
   getHello(): string {
     return 'Hello World!' + this.counter++;
->>>>>>> Stashed changes
   }
 
   getTokenAddress(): string {
