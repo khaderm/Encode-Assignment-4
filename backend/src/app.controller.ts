@@ -1,27 +1,30 @@
-import {
-  Controller,
-  Body,
-  Get,
-  Post,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Body, Get, Post, Param, Query } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { AppService } from './app.service';
-import { RequestTokenDTO, DelegateDTO, VoteDTO, TransactionResponseDTO, ErrorMessageDTO } from './dtos';
+import {
+  RequestTokensDTO,
+  DelegateDTO,
+  VoteDTO,
+  TransactionResponseDTO,
+  TransactionErrorDTO,
+} from './dtos';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/my-token-contract-address')
-  getMyTokenContractAddress(): { result: string } {
-    return { result: this.appService.getMyTokenContractAddress() };
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
   }
 
-  @Get('/tokenized-ballot-contract-address')
-  getTokenizedBallotContractAddress(): { result: string } {
-    return { result: this.appService.getTokenizedBallotContractAddress() };
+  @Get('token-address')
+  getTokenAddress(): { result: string } {
+    return { result: this.appService.getTokenAddress() };
+  }
+  @Get('ballot-contract')
+  getBallotContract(): { result: string } {
+    return { result: this.appService.getBallotAddress() };
   }
 
   @Get('total-supply')
@@ -32,7 +35,7 @@ export class AppController {
   @Get('allowance')
   getAllowance(
     @Query('from') from: string,
-    @Query('to') to: string,
+    @Query('to') to: string
   ): Promise<number> {
     return this.appService.getAllowance(from, to);
   }
@@ -48,26 +51,41 @@ export class AppController {
   }
 
   // Minting
-  @ApiBody({ description: 'Example payload (Address, amount)', type: RequestTokenDTO })
+  @ApiBody({
+    description: 'Example payload (Address, amount)',
+    type: RequestTokensDTO,
+  })
   @Post('request-tokens')
-  requestTokens(@Body() body: RequestTokenDTO): Promise<TransactionResponseDTO | ErrorMessageDTO> {
+  requestTokens(
+    @Body() body: RequestTokensDTO
+  ): Promise<TransactionResponseDTO | TransactionErrorDTO> {
     const { address, amount } = body;
-    
+
     return this.appService.requestTokens(address, amount);
   }
 
   // Delegating
-  @ApiBody({ description: 'Example payload (Delegatee Address)', type: DelegateDTO })
+  @ApiBody({
+    description: 'Example payload (Delegatee Address)',
+    type: DelegateDTO,
+  })
   @Post('delegate')
-  delegate(@Body() body: DelegateDTO): Promise<TransactionResponseDTO | ErrorMessageDTO> {
+  delegate(
+    @Body() body: DelegateDTO
+  ): Promise<TransactionResponseDTO | TransactionErrorDTO> {
     const { delegatee } = body;
     return this.appService.delegate(delegatee);
   }
 
   // Voting
-  @ApiBody({ description: 'Example payload (ProposalId, Amount)', type: VoteDTO })
+  @ApiBody({
+    description: 'Example payload (ProposalId, Amount)',
+    type: VoteDTO,
+  })
   @Post('vote')
-  vote(@Body() body: VoteDTO): Promise<TransactionResponseDTO | ErrorMessageDTO> {
+  vote(
+    @Body() body: VoteDTO
+  ): Promise<TransactionResponseDTO | TransactionErrorDTO> {
     const { proposalId, amount } = body;
 
     return this.appService.vote(proposalId, amount);
@@ -75,7 +93,7 @@ export class AppController {
 
   // Getting winning proposal
   @Get('winning-proposal')
-  getWinningProposal() : Promise<TransactionResponseDTO | ErrorMessageDTO> {
+  getWinningProposal(): Promise<TransactionResponseDTO | TransactionErrorDTO> {
     return this.appService.getWinningProposal();
   }
 }
