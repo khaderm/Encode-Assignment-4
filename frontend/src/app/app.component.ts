@@ -13,7 +13,7 @@ declare global {
 
 const enum API_URLS {
   TOKEN_ADDRESS_API_URL = 'http://localhost:3000/token-address',
-  BALLOT_ADDRESS_API_URL = 'http://localhost:3000/ballot-address',
+  BALLOT_ADDRESS_API_URL = 'http://localhost:3000/ballot-contract',
   TOKEN_MINT_API_URL = 'http://localhost:3000/request-tokens',
   DELEGATING = 'http://localhost:3000/delegate',
   VOTING_POWER_API_URL = 'http://localhost:3000/vote',
