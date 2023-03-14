@@ -12,18 +12,18 @@ declare global {
 }
 
 const enum API_URLS {
-  MY_TOKEN_ADDRESS = 'http://localhost:3000/my-token-contract-address',
-  TOKENIZED_BALLOT_ADDRESS = 'http://localhost:3000/tokenized-ballot-contract-address',
-  MINTING = 'http://localhost:3000/request-tokens',
+  TOKEN_ADDRESS_API_URL = 'http://localhost:3000/token-address',
+  BALLOT_ADDRESS_API_URL = 'http://localhost:3000/ballot-contract',
+  TOKEN_MINT_API_URL = 'http://localhost:3000/request-tokens',
   DELEGATING = 'http://localhost:3000/delegate',
-  VOTING = 'http://localhost:3000/vote',
+  VOTING_POWER_API_URL = 'http://localhost:3000/vote',
   WINNING_PROPOSAL = 'http://localhost:3000/winning-proposal',
 }
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   blockNumber: number | string | undefined;
@@ -42,13 +42,13 @@ export class AppComponent {
 
   mintingInfo: TransactionResponseDTO | undefined;
   delegatingInfo: TransactionResponseDTO | undefined;
-  votingInfo: TransactionResponseDTO |  undefined;
-  winningProposalInfo: TransactionResponseDTO |  undefined;
+  votingInfo: TransactionResponseDTO | undefined;
+  winningProposalInfo: TransactionResponseDTO | undefined;
 
   mintingError: ErrorMessageDTO | undefined;
   delegatingError: ErrorMessageDTO | undefined;
-  votingError: ErrorMessageDTO |  undefined;
-  winningProposalError: ErrorMessageDTO |  undefined;
+  votingError: ErrorMessageDTO | undefined;
+  winningProposalError: ErrorMessageDTO | undefined;
 
   loadingMintingTxnInfo = false;
   loadingDelegatingTxnInfo = false;
@@ -57,27 +57,30 @@ export class AppComponent {
 
   constructor(private http: HttpClient) {
     this.provider = ethers.providers.getDefaultProvider('goerli');
+    this.getBallotContractAddress();
+    this.getTokenContractAddress();
+    this.getTokenInfo();
+    this.getWinningProposal();
   }
 
-  getTokenizedBallotContractAddress() {
+  async getBallotContractAddress() {
     this.http
-      .get<{ result: string }>(API_URLS.TOKENIZED_BALLOT_ADDRESS)
+      .get<{ result: string }>(API_URLS.BALLOT_ADDRESS_API_URL)
       .subscribe((answer) => {
-        this.tokenizedBallotContractAddress = answer.result
+        this.tokenizedBallotContractAddress = answer.result;
       });
   }
 
-  getMyTokenContractAddress() {
+  async getTokenContractAddress() {
     this.http
-      .get<{ result: string }>(API_URLS.MY_TOKEN_ADDRESS)
+      .get<{ result: string }>(API_URLS.TOKEN_ADDRESS_API_URL)
       .subscribe((answer) => {
-        this.myTokenContractAddress = answer.result
+        this.myTokenContractAddress = answer.result;
         this.getTokenInfo();
       });
   }
 
-
-  getTokenInfo() {
+  async getTokenInfo() {
     if (!this.myTokenContractAddress) return;
     const { abi } = tokenJson;
 
@@ -92,7 +95,7 @@ export class AppComponent {
       const totalSupplyNumber = parseFloat(totalSupplyString);
 
       this.totalSupply = totalSupplyNumber;
-    })
+    });
   }
 
   async connectWallet() {
@@ -110,7 +113,9 @@ export class AppComponent {
 
     this.isWalletConnected = true;
 
-    this.userTokenBalance = await this.tokenContract?.['balanceOf']?.(this.userAddress) || 'Cannot load the token balance data';
+    this.userTokenBalance =
+      (await this.tokenContract?.['balanceOf']?.(this.userAddress)) ||
+      'Cannot load the token balance data';
   }
 
   requestTokens(value: string) {
@@ -119,71 +124,87 @@ export class AppComponent {
     const body = {
       address: this.userAddress,
       amount: mintValue,
-    }
+    };
     this.loadingMintingTxnInfo = true;
 
-    this.http.post<TransactionResponseDTO | ErrorMessageDTO>(API_URLS.MINTING, body).subscribe((ans) => {
-      if ('detailedMessage' in ans) {
-        this.mintingError = ans;
-        this.mintingInfo = undefined;
-      } else {
-        this.mintingInfo = ans;
-        this.mintingError = undefined;
-      }
-      this.loadingMintingTxnInfo = false;
-    });
+    this.http
+      .post<TransactionResponseDTO | ErrorMessageDTO>(
+        API_URLS.TOKEN_MINT_API_URL,
+        body
+      )
+      .subscribe((ans) => {
+        if ('detailedMessage' in ans) {
+          this.mintingError = ans;
+          this.mintingInfo = undefined;
+        } else {
+          this.mintingInfo = ans;
+          this.mintingError = undefined;
+        }
+        this.loadingMintingTxnInfo = false;
+      });
   }
 
   delegate(address: string) {
     const body = {
       delegatee: address,
-    }
+    };
     this.loadingDelegatingTxnInfo = true;
 
-    this.http.post<TransactionResponseDTO | ErrorMessageDTO>(API_URLS.DELEGATING, body).subscribe((ans) => {
-      if ('detailedMessage' in ans) {
-        this.delegatingError = ans;
-        this.delegatingInfo = undefined;
-      } else {
-        this.delegatingInfo = ans;
-        this.delegatingError = undefined;
-      }
-      this.loadingDelegatingTxnInfo = false;
-    });
+    this.http
+      .post<TransactionResponseDTO | ErrorMessageDTO>(API_URLS.DELEGATING, body)
+      .subscribe((ans) => {
+        if ('detailedMessage' in ans) {
+          this.delegatingError = ans;
+          this.delegatingInfo = undefined;
+        } else {
+          this.delegatingInfo = ans;
+          this.delegatingError = undefined;
+        }
+        this.loadingDelegatingTxnInfo = false;
+      });
   }
 
   vote(proposalId: string, amount: string) {
     const body = {
       proposalId: proposalId,
-      amount: amount
-    }
+      amount: amount,
+    };
     this.loadingVotingTxnInfo = true;
 
-    this.http.post<TransactionResponseDTO | ErrorMessageDTO>(API_URLS.VOTING, body).subscribe((ans) => {
-      if ('detailedMessage' in ans) {
-        this.votingError = ans;
-        this.votingInfo = undefined;
-      } else {
-        this.votingInfo = ans;
-        this.votingError = undefined;
-      }
-      this.loadingVotingTxnInfo = false;
-    });
+    this.http
+      .post<TransactionResponseDTO | ErrorMessageDTO>(
+        API_URLS.VOTING_POWER_API_URL,
+        body
+      )
+      .subscribe((ans) => {
+        if ('detailedMessage' in ans) {
+          this.votingError = ans;
+          this.votingInfo = undefined;
+        } else {
+          this.votingInfo = ans;
+          this.votingError = undefined;
+        }
+        this.loadingVotingTxnInfo = false;
+      });
   }
 
   getWinningProposal() {
     this.loadingWinningProposalTxnInfo = true;
 
-    this.http.get<TransactionResponseDTO | ErrorMessageDTO>(API_URLS.WINNING_PROPOSAL).subscribe((ans) => {
-      if ('detailedMessage' in ans) {
-        this.winningProposalError = ans;
-        this.winningProposalInfo = undefined;
-      } else {
-        this.winningProposalInfo = ans;
-        this.winningProposalError = undefined;
-      }
+    this.http
+      .get<TransactionResponseDTO | ErrorMessageDTO>(
+        API_URLS.VOTING_POWER_API_URL
+      )
+      .subscribe((ans) => {
+        if ('detailedMessage' in ans) {
+          this.winningProposalError = ans;
+          this.winningProposalInfo = undefined;
+        } else {
+          this.winningProposalInfo = ans;
+          this.winningProposalError = undefined;
+        }
 
-      this.loadingWinningProposalTxnInfo = false;
-    });
+        this.loadingWinningProposalTxnInfo = false;
+      });
   }
 }
