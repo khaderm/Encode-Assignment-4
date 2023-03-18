@@ -8,10 +8,10 @@
 </style>
 
 <div class="px-4 py-5 my-5">
-  <h1 class="display-5 fw-bold text-center">Weekend Project #4</h1>
+  <h1 class="display-5 fw-bold text-center">Lottery Weekend 5 Project </h1>
   <p class="text-center">
     By Team 3 Intelstrata#0001, Brandon C.#8663, augustov#8298,
-    benzo#5809,Meek#6464
+    benzo#5809, Meek#6464, tj_r#4071
   </p>
 
   <div class="container">
@@ -24,14 +24,14 @@
         class="btn btn-primary mx-5"
         (click)="getBallotContractAddress()"
       >
-        Get Tokenized Ballot Contract Address
+        Get Lottery Contract Address
       </button>
       <button
         type="button"
         class="btn btn-primary"
         (click)="getTokenContractAddress()"
       >
-        Get MyToken (ERC20) Contract Address
+        Get Lottery Token (ERC20) Contract Address
       </button>
     </div>
   </div>
@@ -61,12 +61,12 @@
           <div class="card-body">
             <h5 class="card-title mb-4">Contracts info</h5>
             <p class="card-text">
-              <span class="fw-bold">Tokenized Ballot Contract address:</span>
+              <span class="fw-bold"> Lottery Contract address:</span>
               {{ tokenizedBallotContractAddress }}
             </p>
             <p class="card-text">
-              <span class="fw-bold">My Token (ERC20) Contract address:</span>
-              {{ myTokenContractAddress }}
+              <span class="fw-bold"> Lottery Token (ERC20) Contract address:</span>
+              {{ myTokenContractAddress}}
             </p>
             <p class="card-text">
               <span class="fw-bold">Total Supply: </span>
@@ -78,7 +78,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">1. Minting</h5>
+            <h5 class="card-title">1. Open Bets (Minting?)</h5>
 
             <div class="my-4">
               <div *ngIf="isWalletConnected">
@@ -139,7 +139,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">2. Delegating</h5>
+            <h5 class="card-title">2. Top Up Your Account</h5>
 
             <div class="my-4">
               <div *ngIf="isWalletConnected">
@@ -155,7 +155,7 @@
                   class="btn btn-primary mx-2"
                   (click)="delegate(valueInput.value)"
                 >
-                  Address to delegate
+                  Address to Top
                 </button>
               </div>
             </div>
@@ -199,7 +199,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">3. Voting</h5>
+            <h5 class="card-title">3. Bet with your account</h5>
 
             <div class="my-4">
               <div *ngIf="isWalletConnected">
@@ -263,7 +263,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">4. Getting results</h5>
+            <h5 class="card-title">4. Collect your winnings</h5>
 
             <div class="my-4">
               <div *ngIf="isWalletConnected">
@@ -313,6 +313,14 @@
                   {{ winningProposalInfo.etherscanLink }}
                 </p>
               </div>
+                <div style="border: 1px solid black; padding: 10px;">
+  <h2>Lottery Information</h2>
+  <p>ETH Balance: <span id="eth-balance"></span></p>
+  <p>Time Left to Buy: <span id="time-left"></span></p>
+  <p>Tokens Remaining: <span id="tokens-remaining"></span></p>
+  <p>Winning Numbers: <span id="winning-numbers"></span></p>
+</div>
+
             </div>
           </div>
         </div>
